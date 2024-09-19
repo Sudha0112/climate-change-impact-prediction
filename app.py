@@ -1,13 +1,14 @@
 import streamlit as st
 import numpy as np
-import joblib
 from datetime import datetime
 import requests
 import folium
 from streamlit_folium import st_folium
+import pickle
 
 model_path = 'climatemodel.pkl'
-model = joblib.load(model_path)
+with open(model_path, 'rb') as file:
+    model = pickle.load(file)
 
 def get_weather_data(api_key, city):
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&aqi=no"
