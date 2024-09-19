@@ -8,12 +8,8 @@ import joblib
 
 model_path = 'climatemodel.joblib'
 
-# model = joblib.load(model_path)
-try:
-    model = joblib.load(model_path)
-    print("Model loaded successfully.")
-except Exception as e:
-    print(f"Error loading model: {e}")
+model = joblib.load(model_path)
+
 
 def get_weather_data(api_key, city):
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&aqi=no"
