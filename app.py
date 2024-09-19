@@ -6,15 +6,18 @@ import folium
 from streamlit_folium import st_folium
 import joblib
 
+# Define the path to the model
 model_path = 'climatemodel.joblib'
 
-# model = joblib.load(model_path)
+# Attempt to load the model and print its type and methods for debugging
 try:
     model = joblib.load(model_path)
-    print("Model loaded successfully.")
+    st.write("Model loaded successfully.")
+    st.write(f"Model type: {type(model)}")
+    st.write(f"Model methods: {dir(model)}")
 except Exception as e:
-    print(f"Error loading model: {e}")
-
+    st.error(f"Error loading model: {e}")
+    model = None  # Set model to None to avoid further errors if loading fails
 
 def get_weather_data(api_key, city):
     url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}&aqi=no"
@@ -87,10 +90,17 @@ if option == 'Predict Climate Impact':
     day = date_input.day
     
     if st.button("🔮 Predict Climate Impact", key="predict_impact"):
-        # Prepare input data for prediction
-        new = np.array([[dew_point, fog, hail, heat_index, humidity, pressure, temperature, year, month, day]])
-        prediction = model.predict(new)
-        st.success(f"Predicted Climate Change Impact: {prediction[0]}")
+        if model:
+            try:
+                # Prepare input data for prediction
+                new = np.array([[dew_point, fog, hail, heat_index, humidity, pressure, temperature, year, month, day]])
+                st.write(f"Input data: {new}")
+                prediction = model.predict(new)
+                st.success(f"Predicted Climate Change Impact: {prediction[0]}")
+            except Exception as e:
+                st.error(f"Prediction error: {e}")
+        else:
+            st.error("Model not loaded. Cannot make predictions.")
 
 elif option == 'Live Weather Data':
     st.header("🌤️ Live Weather Data")
