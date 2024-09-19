@@ -8,7 +8,12 @@ import joblib
 
 model_path = 'climatemodel.joblib'
 
-model = joblib.load(model_path)
+# model = joblib.load(model_path)
+try:
+    model = joblib.load(model_path)
+    print("Model loaded successfully.")
+except Exception as e:
+    print(f"Error loading model: {e}")
 
 
 def get_weather_data(api_key, city):
